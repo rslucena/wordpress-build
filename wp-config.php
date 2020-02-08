@@ -17,7 +17,7 @@ define('COOKIE_DOMAIN', ROOT );
 define ('WPLANG', 'pt_BR');
 
 /* MySQL settings */
-define( 'DB_NAME',     'lumemedicinaintegral' );
+define( 'DB_NAME',     '' );
 define( 'DB_USER',     'root' );
 define( 'DB_PASSWORD', '' );
 define( 'DB_HOST',     'localhost' );
