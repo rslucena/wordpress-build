@@ -7,6 +7,8 @@ object-cache.php
 advanced-cache.php
 wp-cache-config.php
 
+app/uploads/*
+
 readme.html
 license.txt
 
@@ -40,3 +42,4 @@ license.txt
 !safari-pinned-tab.svg
 
 sitemap.xml
+
