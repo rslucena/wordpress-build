@@ -4,7 +4,7 @@
 
 define('ROOT', 'localhost');
 define('PROTOCOL', 'http://');
-define('DOMAIN_NAME', ROOT . '');
+define('DOMAIN_NAME', ROOT . '/' . '');
 
 //URL DEFAULT
 define('WP_SITEURL', PROTOCOL . DOMAIN_NAME);
@@ -24,7 +24,7 @@ define( 'DB_HOST',     'localhost' );
 define( 'DB_CHARSET',  'utf8mb4' );
 
 /* MySQL database table prefix. */
-$table_prefix = 'lume_';
+$table_prefix = '1'.DB_NAME.'0_';
 
 /* Authentication Unique Keys and Salts. */
 define('AUTH_KEY',         'GdC~1EL3kY<D&DYh-jf*Q^H<Ov=5+;Vo}[z;b_.nWp|?,ba&G;}V^hcgbpB9@G)V');
