@@ -9,54 +9,73 @@ use Roots\Sage\Template\Blade;
 use Roots\Sage\Template\BladeProvider;
 
 if ( ! function_exists( 'is_plugin_active' ) )
-	require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
+    require_once( ABSPATH . '/wp-admin/includes/plugin.php' );
 
+//INCLUDE ASSETS
 add_action('wp_enqueue_scripts', function () {
-	wp_enqueue_style('sage/main.css', asset_path('assets/styles/main.min.css'), false, true);
-	wp_enqueue_script('slick/slider.js', asset_path('assets/scripts/slider.min.js'), ['jquery'], true, true);
-	wp_enqueue_script('slick/lightbox.js', asset_path('assets/scripts/lightbox.min.js'), ['jquery'], true, true);
-	wp_enqueue_script('sage/main.js', asset_path('assets/scripts/main.min.js'), ['jquery'], true, true);
+    //CSS
+    wp_enqueue_style('main.min.css', asset_path('assets/styles/main.min.css'), false, true);
+    //JS
+    wp_enqueue_script('slider.min.js', asset_path('assets/scripts/slider.min.js'), ['jquery'], true, true);
+    wp_enqueue_script('lightbox.min.js', asset_path('assets/scripts/lightbox.min.js'), ['jquery'], true, true);
+    wp_enqueue_script('main.min.js', asset_path('assets/scripts/main.min.js'), ['jquery'], true, true);
 }, 100);
 
+//INCLUDE ADMIN
 add_action( 'admin_enqueue_scripts', function(){
-    wp_enqueue_style('sage/admin-main.css', asset_path('assets/styles/admin-main.min.css'), false, null);
+    //CSS
+    wp_enqueue_style('admin-main.min.css', asset_path('assets/styles/admin-main.min.css'), false, true);
 }, 100);
 
+//DEFAULT SETTINGS
 add_action('after_setup_theme', function () {
 
-	//ATIVE SUPORT SOIL
+    //ATIVE SUPORT SOIL
     add_theme_support('soil-clean-up');
     add_theme_support('soil-nav-walker');
     add_theme_support('soil-nice-search');
     add_theme_support('soil-relative-urls');
-    register_nav_menus(['primary_navigation' => __('Navegação', '')]);
     add_theme_support('post-thumbnails');
-    add_theme_support('customize-selective-refresh-widgets');
 
-	//ATIVE PLUGINS
-	activate_plugin( PLUGINDIR .'/acf/acf.php' );
-	activate_plugin( PLUGINDIR .'/soil/soil.php' );
-	activate_plugin( PLUGINDIR .'/contactform/wp-contact-form-7.php' );
-	activate_plugin( PLUGINDIR .'/classiceditor/classic-editor.php' );
+    //ADD MENU
+    register_nav_menus(['primary_navigation' => __('Navegação', '')]);
+
+    //ATIVE PLUGINS
+    activate_plugin( PLUGINDIR .'/acf/acf.php' );
+    activate_plugin( PLUGINDIR .'/soil/soil.php' );
+    activate_plugin( PLUGINDIR .'/contactform/wp-contact-form-7.php' );
+    activate_plugin( PLUGINDIR .'/classiceditor/classic-editor.php' );
+
+    //CLEAR WP
+    wp_delete_post(1, true);
+    wp_delete_post(2, true);
+    wp_delete_post(3, true);
+    wp_delete_post(4, true);
+
+    //REMOVE WELCOME
+    remove_action( 'welcome_panel', 'wp_welcome_panel' );
 
 }, 20);
 
-add_action('widgets_init', function () {
-    $config = [
-        'before_widget' => '<section class="widget %1$s %2$s">',
-        'after_widget'  => '</section>',
-        'before_title'  => '<h3>',
-        'after_title'   => '</h3>'
-    ];
-    register_sidebar([
-        'name'          => __('Primary', 'sage'),
-        'id'            => 'sidebar-primary'
-    ] + $config);
-    register_sidebar([
-        'name'          => __('Footer', 'sage'),
-        'id'            => 'sidebar-footer'
-    ] + $config);
-});
+//CREATE XML
+function xml_sitemap() {
+    $postsForSitemap = get_posts( array( 'numberposts' => -1, 'orderby' => 'modified', 'post_type'  => array('post','page'), 'order'    => 'DESC' ));
+    $sitemap = '<?xml version="1.0" encoding="UTF-8"?>';
+    $sitemap .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+    foreach($postsForSitemap as $post) {
+        setup_postdata($post);
+        $postdate = explode(" ", $post->post_modified);
+        $sitemap .= "<url>\n<loc>{get_permalink($post->ID)}</loc>\n<lastmod>{$postdate[0]}</lastmod>\n<changefreq>monthly</changefreq>\n</url>";
+    }
+    $sitemap .= "</urlset>";
+    $fp = fopen(ABSPATH . "sitemap.xml", 'w');
+    fwrite($fp, $sitemap);
+    fclose($fp);
+}
+add_action("publish_post", function (){ xml_sitemap(); });
+add_action("publish_page", function (){ xml_sitemap(); });
+
+//END SETUP
 
 add_action('the_post', function ($post) {
     sage('blade')->share('post', $post);
@@ -75,23 +94,17 @@ add_action('after_setup_theme', function () {
             return ["{$path}/templates", $path];
         })->unique()->toArray();
     config([
-        'assets.manifest' => "{$paths['dir.stylesheet']}/assets.json",
-        'assets.uri'      => "{$paths['uri.stylesheet']}/",
-        'view.compiled'   => "{$paths['dir.upload']}/cache/compiled",
-        'view.namespaces' => ['App' => WP_CONTENT_DIR],
-        'view.paths'      => $viewPaths,
-    ] + $paths);
+            'assets.manifest' => "{$paths['dir.stylesheet']}/assets.json",
+            'assets.uri'      => "{$paths['uri.stylesheet']}/",
+            'view.compiled'   => "{$paths['dir.upload']}/cache/compiled",
+            'view.namespaces' => ['App' => WP_CONTENT_DIR],
+            'view.paths'      => $viewPaths,
+        ] + $paths);
 
-    /**
-     * Add JsonManifest to Sage container
-     */
     sage()->singleton('sage.assets', function () {
         return new JsonManifest(config('assets.manifest'), config('assets.uri'));
     });
 
-    /**
-     * Add Blade to Sage container
-     */
     sage()->singleton('sage.blade', function (ContainerContract $app) {
         $cachePath = config('view.compiled');
         if (!file_exists($cachePath)) {
@@ -101,16 +114,11 @@ add_action('after_setup_theme', function () {
         return new Blade($app['view'], $app);
     });
 
-    /**
-     * Create @asset() Blade directive
-     */
     sage('blade')->compiler()->directive('asset', function ($asset) {
         return "<?= App\\asset_path({$asset}); ?>";
     });
 });
 
+//INIT
 
-/**
- * Init config
- */
 sage()->bindIf('config', Config::class, true);

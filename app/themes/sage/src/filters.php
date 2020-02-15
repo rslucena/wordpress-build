@@ -2,9 +2,13 @@
 
 namespace App;
 
-/** Add <body> classes */
+//CUSTOMIZAR LOGIN
+add_filter('login_redirect', function () {
+    return 'wp-admin/themes.php';
+});
+
+//ADD BODY CLASS
 add_filter('body_class', function (array $classes) {
-    // Add page slug if it doesn't exist
     if (is_single() || is_page() && !is_front_page()) {
         if (!in_array(basename(get_permalink()), $classes)) {
             $classes[] = basename(get_permalink());
@@ -19,18 +23,12 @@ add_filter('body_class', function (array $classes) {
     return $classes;
 });
 
-
-//CUSTOMIZAR LOGIN
-add_filter('login_redirect', function () {
-	return 'wp-admin/themes.php';
-});
-
-//CUSTOMIZAR RESUMO
+//ADD CUSTOM RESUME
 add_filter('excerpt_more', function ($more) { global $post; return ''; });
 add_filter( 'excerpt_length', function ( $length  ) { return 30; } , 999 );
 
 
-/** Template Hierarchy should search for .blade.php files */
+//FORCE HIERARCHY SEARCH .BLADE.PHP
 array_map(function ($type) {
     add_filter("{$type}_template_hierarchy", function ($templates) {
         return call_user_func_array('array_merge', array_map(function ($template) {
@@ -42,12 +40,11 @@ array_map(function ($type) {
             return ["{$normalizedTemplate}.blade.php", "{$normalizedTemplate}.php"];
         }, $templates));
     });
-}, [
-    'index', '404', 'archive', 'author', 'category', 'tag', 'taxonomy', 'date', 'home',
-    'frontpage', 'page', 'paged', 'search', 'single', 'singular', 'attachment'
-]);
+},
+    ['index', '404', 'archive', 'author', 'category', 'tag', 'taxonomy', 'date', 'home',
+    'frontpage', 'page', 'paged', 'search', 'single', 'singular', 'attachment']);
 
-/** * Render page using Blade */
+//RENDER .BLADE
 add_filter('template_include', function ($template) {
     $data = array_reduce(get_body_class(), function ($data, $class) use ($template) {
         return apply_filters("sage/template/{$class}/data", $data, $template);
@@ -59,7 +56,7 @@ add_filter('template_include', function ($template) {
 }, PHP_INT_MAX);
 add_filter('comments_template', 'App\\template_path');
 
-/** Filter Query */
+//FILTER QUERYS
 add_action( 'pre_get_posts', function( $q ){
 	if( $title = $q->get( '_meta_or_title' ) ){
 		add_filter( 'get_meta_sql', function( $sql ) use ( $title ){

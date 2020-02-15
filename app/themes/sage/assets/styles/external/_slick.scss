@@ -1,0 +1,121 @@
+//SLIDER
+
+.slick-slider {
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -ms-touch-action: pan-y;
+    touch-action: pan-y;
+    -webkit-tap-highlight-color: transparent;
+}
+.slick-list {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    margin: 0;
+    padding: 0;
+
+    &:focus {
+        outline: none;
+    }
+
+    &.dragging {
+        cursor: pointer;
+        cursor: hand;
+    }
+}
+.slick-slider .slick-track,
+.slick-slider .slick-list {
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+
+.slick-track {
+    position: relative;
+    left: 0;
+    top: 0;
+    display: block;
+
+    &:before,
+    &:after {
+        content: "";
+        display: table;
+    }
+
+    &:after {
+        clear: both;
+    }
+
+    .slick-loading & {
+        visibility: hidden;
+    }
+}
+.slick-slide {
+    float: left;
+    height: 100%;
+    min-height: 1px;
+    [dir="rtl"] & {
+        float: right;
+    }
+    img {
+        display: block;
+    }
+    &.slick-loading img {
+        display: none;
+    }
+
+    display: none;
+
+    &.dragging img {
+        pointer-events: none;
+    }
+
+    .slick-initialized & {
+        display: block;
+    }
+
+    .slick-loading & {
+        visibility: hidden;
+    }
+
+    .slick-vertical & {
+        display: block;
+        height: auto;
+        border: 1px solid transparent;
+    }
+}
+
+.slick-arrow.slick-hidden {
+    display: none;
+}
+
+.seta-esquerda {
+    right: 2em;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAqCAYAAAC3DKvtAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsSAAALEgHS3X78AAACXklEQVRIx7XWPWgUQRTA8f+d8ZRDEJREgocGPxCJYCFEuIiFwohiMaCCjnaCIDZCmnQJVgaEQLo0QgpHAyIDosWI2mj8wEYEC6tAEhEEQbASk7PYGVw2sx+3t75mYebt796+Zd4t1ujN1uhz/I+wRr+zRp+v0qy76xvgnjVaVg2/BhrAvDX6TJXwgrs2gEfW6FOVwEKqFWDRrW1y+IkqKvbt8NEEHlujj1cBLyT2msATa/RolRX72OLwkV7gT8DPQM5WwFqjj5SChVRrwNuUPI8fLlMxrO9zPLYBz6zRh8rAr3Ly+4Hn1uiD3cLvgT859ww4fH9hWEj1C/hY4EkHgRfW6L1FKy7SDh8thw8VhUMv8CuwFFjf5drSKgsPAGeB5cDeHuClNXpnJiykWubfQPLRB2wHTgLfAvg+V/mOrIohfLzbQqovDv8e2D/g8P4s+ENgbcQ90WfgNLAWyBkmmi21NHgosLYIYI1uAJMpRf0GJoVUnTS4HWqPNXojcJ/oRYbQi0KqpwC15K41ukk05foSW7uBO8CFALrq0Id+IVTx0QC6BNzOQK/E0TQ49I/RAi6loFeFVA+SGyE41N9aYK0DXBNSzZF3gzW6DvwgGuxZ0QGuC6lm0xKSFQ8XRG9moSG4TX6MCalm8pKS8LGc/HEh1XSBH18HZ31DTAippoqgEHt51uhBorkbiltCqomiaLLitGqnukWLwNNCqvFu0Tx4Bhgrg4LrcWDwzBIdgE5Z2FccHzx3e0XjsD8Yc0Tnvyc0Do8C80STarVXFKDuBs8KcLkq1Fe8AbhRJQrwFz0luS++0o3AAAAAAElFTkSuQmCC');
+}
+
+.seta-direita {
+    left: 2em;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAqCAYAAABcOxDuAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsSAAALEgHS3X78AAAChElEQVRIx62WO2hUQRSGv13XIhHcRAgE3CCBkCKYIhAwmIiNGSI2gyDogJ0IlhpsgoJgkUZEC7UVhElhMwgL6/io3GAUH+CjlYCKIAiLj0JNtNjZZfZm7mMfp5o7/5zvnvnvzNzJ0cOwRi8AL3sJnLdGvwfI9wh4EDDAq55ArdFzQBnoB6pdQ63RMw64w3V1B7VGTwMVYKfrqgFvO4Zao6cACxS97jUh1UZHUGv0JHAfGIxI1UajLag1egJ4BAwF5Pah1ujxBOAGsNYW1Bo95oDDMUNeC6l+ZIZao0eBx0ApYdiq/5BPAY64CkdS3l31H/IJwJKrcDSDQ+lQa/Swq3AsA3BdSPUxEWqNHnLA8QxAiPi5BeoBJwLJX4EPaVNvgVqjB6nvlMlA4jdgARjIDLVGF6nv5alAUg0QwG+2bs3vwJstUAesANNxQCHVC2A2oD9tHCLRSjUwQziOC6meuXbopc9DSXlgGfgZA12yRve79npA3xOECqmeAEeAXwH9AFB24NWAHrKEXKNhjT4E3AP6AuMeACeAL0AhopWEVJ+i0wdASPUQOEr9K0djHrgDvAto+0Oe4oErCeDDhNfwbCLUgctuqn8CgNBZMRfraTSs0ceAFWAbyfEXGBBSNVdQ7NEnpLoLnKT+q0iKArAvbTo+eAU4BWymgFt8Tf2dCKluA6eBfwnDWlZAjoxhjT4D3IjJqQG7hFSbmSr1Kr4FnI2Ri8DezNOPgK8DizFy09e2rz1CqqvAUkBq+trRBU1ItQxcinQ3N0HmDxUKa/Rl4ILXtVtI9bmrS6+Q6iJwJWpB19dzIdV54JpvQaFjWmucA7Y3Ku3KUz+s0TngJrDYM6gH7vsPEPSw5//My+0AAAAASUVORK5CYII=');
+     }
+
+.seta-direita, .seta-esquerda {
+    top: 47%;
+    z-index: 10;
+    width: 18px;
+    height: 31px;
+    opacity: 0.3;
+    cursor: pointer;
+    position: absolute;
+    background-size: cover;
+    background-position: center;
+}
